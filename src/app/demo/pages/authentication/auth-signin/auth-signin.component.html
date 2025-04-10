@@ -1,0 +1,40 @@
+<div class="auth-wrapper">
+  <div class="auth-content">
+    <div class="auth-bg">
+      <span class="r"></span>
+      <span class="r s"></span>
+      <span class="r s"></span>
+      <span class="r"></span>
+    </div>
+    <div class="card">
+      <div class="card-body text-center">
+        <div class="mb-4">
+          <i class="feather icon-unlock auth-icon"></i>
+        </div>
+        <h3 class="mb-4">Login</h3>
+        
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="Email" formControlName="email" />
+          </div>
+          <div class="input-group mb-4">
+            <input type="password" class="form-control" placeholder="Senha" formControlName="senha" />
+          </div>
+
+          <button class="btn btn-primary mb-4" type="submit" [disabled]="loginForm.invalid">Login</button>
+        </form>
+
+        <p class="text-danger" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+        <p class="mb-2 text-muted">
+          Esqueceu a senha?
+          <a routerLink="/auth/reset-password">Resetar</a>
+        </p>
+        <p class="mb-0 text-muted">
+          Não tem cadastro?
+          <a routerLink="/auth/signup">Cadastrar</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

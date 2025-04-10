@@ -1,0 +1,60 @@
+/* Estilo do modal */
+.modal {
+  display: block; /* Garantir que esteja visível */
+  background: rgba(0, 0, 0, 0.5); /* Fundo escuro */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1050; /* Garantir que esteja acima do backdrop */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  border-radius: 10px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header .close {
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1040; /* Abaixo do modal */
+}
+
+.modal-dialog.modal-lg {
+  max-width: 90%;
+  width: 90%;
+}
+
+.modal-header {
+  background-color: #28a745;
+  color: white;
+}
+
+.modal-footer {
+  text-align: right;
+}
+
+.modal-body {
+  padding: 15px;
+}
+
+.custom-switch .form-check-input {
+  width: 2.5rem; /* Largura maior */
+  height: 1.5rem; /* Altura maior */
+  transform: scale(1.0); /* Ajusta o tamanho do switch */
+  cursor: pointer;
+}

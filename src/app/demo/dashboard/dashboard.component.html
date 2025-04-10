@@ -1,0 +1,175 @@
+<div class="col-xl-12 col-md-12">
+  <app-card cardTitle="Contatos"  [options]="false" [buttonh]="true" [search]="true" buttonTitle="Adicionar Contato" [buttonAction]="abrirModal.bind(this)"  
+  [searchPlaceholder]="'Buscar por nome ou ID...'"
+  (searchChange)="filtroBusca = $event" cardClass="Recent-Users" blockClass="p-0">
+    <div class="table-responsive">
+
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Número de Celular</th>
+            <th>Email</th>
+            <th>Ultimo Contato</th>
+            <th>Pausa</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let lead of leadsFiltrados">
+            <td>{{ lead.id }}</td>
+            <td>{{ lead.nome }}</td>
+            <td>{{ lead.numero_celular }}</td>
+            <td>{{ lead.email || 'Não informado' }}</td>
+            <td>{{ lead.ultimo_contato ? (lead.ultimo_contato | date:'dd/MM/yyyy') : 'Sem registro' }}</td>
+            <td>
+              <div class="form-check form-switch d-flex align-items-center gap-1">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [checked]="lead.pausa"
+                  (change)="onTogglePausa(lead)"
+                />
+                <span [class.text-danger]="lead.pausa" [class.text-success]="!lead.pausa">
+                  {{ lead.pausa ? 'Pausado' : 'Ativo' }}
+                </span>
+              </div>
+            </td>
+            <!-- Ações -->
+            <td>
+              <a href="javascript:" class="label theme-bg text-white f-12 rounded-pill"  (click)="abrirModal(2, lead)" > Ajustar </a>
+              <a href="javascript:" class="label theme-bg2 text-white f-12 rounded-pill" (click)="excluirLead(lead.id)" >Excluir</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </app-card>
+</div>
+
+
+<!-- Modal de Adicionar/Editar Lead -->
+<div class="modal fade show d-block" *ngIf="mostrarModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ leadSelecionado?.id ? 'EDITAR LEAD' : 'NOVO LEAD' }}</h5>
+      </div>
+
+      <div class="modal-body">
+        <form>
+          <!-- Empresa (fixo) -->
+          <!-- <div class="mb-3">
+            <label class="form-label">Empresa</label>
+            <input type="text" class="form-control" [(ngModel)]="leadSelecionado.empresa" readonly name="empresa">
+          </div> -->
+
+          <div class="row">
+            <!-- Nome -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Nome</label>
+              <input type="text" class="form-control" [(ngModel)]="leadSelecionado.nome" name="nome">
+            </div>
+
+              <!-- Número de Celular -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Número de Celular</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="leadSelecionado.numero_celular"
+                  name="numero_celular"
+                  (input)="formatarTelefone()"
+                />
+              </div>
+
+          </div>
+
+          <div class="row">
+            <!-- Email -->
+            <div class="col-md-8 mb-3">
+              <label class="form-label">E-mail</label>
+              <input type="email" class="form-control" [(ngModel)]="leadSelecionado.email" name="email">
+            </div>
+
+    
+
+            <!-- Switch Pausado -->
+            <div class="col-md-4 mb-3 d-flex align-items-center">
+              <label class="form-check-label ms-2">Pausado</label>
+              <div class="form-check form-switch custom-switch ms-3">
+                <input type="checkbox" class="form-check-input"  [(ngModel)]="leadSelecionado.pausado" name="pausado">
+              </div>
+            </div>
+          </div>
+
+
+          <div *ngIf="modoEdicao">
+            <!-- Lembrete -->
+            <div class="col-md-3 mb-3" >
+              <label for="lembrete" class="form-label">Lembrete</label>
+              <select class="form-select" id="lembrete" [(ngModel)]="leadSelecionado.lembrete">
+                <option value="NA">NA</option>
+                <option value="Semanal">Semanal</option>
+                <option value="Mensal">Mensal</option>
+              </select>
+            </div>
+
+                  <!-- Observações Fixas (Independentes) -->
+                <div class="mb-3 d-flex align-items-center justify-content-between" >
+                  <label class="form-label mb-0"> {{ nomesObservacoes['observacao1'] }} </label>
+                  <div class="form-check form-switch custom-switch">
+                    <input type="checkbox" class="form-check-input" [(ngModel)]="leadSelecionado.ativoObservacao1" name="ativoObservacao1">
+                  </div>
+                </div>
+                <textarea class="form-control" [(ngModel)]="leadSelecionado.observacao1" name="observacao1"></textarea>
+              <br>
+                <div class="mb-3 d-flex align-items-center justify-content-between">
+                  <label class="form-label mb-0"> {{ nomesObservacoes['observacao2'] }} </label>
+                  <div class="form-check form-switch custom-switch">
+                    <input type="checkbox" class="form-check-input" [(ngModel)]="leadSelecionado.ativoObservacao2" name="ativoObservacao2">
+                  </div>
+                </div>
+                <textarea class="form-control" [(ngModel)]="leadSelecionado.observacao2" name="observacao2"></textarea>
+              <br>
+                <div class="mb-3 d-flex align-items-center justify-content-between">
+                  <label class="form-label mb-0"> {{ nomesObservacoes['observacao3'] }} </label>
+                  <div class="form-check form-switch custom-switch">
+                    <input type="checkbox" class="form-check-input" [(ngModel)]="leadSelecionado.ativoObservacao3" name="ativoObservacao3">
+                  </div>
+                </div>
+                <textarea class="form-control" [(ngModel)]="leadSelecionado.observacao3" name="observacao3"></textarea>
+              <br>
+                <div class="mb-3 d-flex align-items-center justify-content-between">
+                  <label class="form-label mb-0"> {{ nomesObservacoes['observacao4'] }} </label>
+                  <div class="form-check form-switch custom-switch">
+                    <input type="checkbox" class="form-check-input" [(ngModel)]="leadSelecionado.ativoObservacao4" name="ativoObservacao4">
+                  </div>
+                </div>
+                <textarea class="form-control" [(ngModel)]="leadSelecionado.observacao4" name="observacao4"></textarea>
+                <br>
+                <div class="mb-3 d-flex align-items-center justify-content-between">
+                  <label class="form-label mb-0"> {{ nomesObservacoes['observacao5'] }} </label>
+                  <div class="form-check form-switch custom-switch">
+                    <input type="checkbox" class="form-check-input" [(ngModel)]="leadSelecionado.ativoObservacao5" name="ativoObservacao5">
+                  </div>
+                </div>
+                <textarea class="form-control" [(ngModel)]="leadSelecionado.observacao5" name="observacao5"></textarea>
+                <br>
+
+          </div>
+          
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary" (click)="salvarLead()">SALVAR</button>
+        <button class="btn btn-secondary" (click)="fecharModal()">SAIR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Fundo escuro do modal -->
+<div class="modal-backdrop fade show" *ngIf="mostrarModal"></div>
