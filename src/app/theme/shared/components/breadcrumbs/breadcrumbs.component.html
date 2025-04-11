@@ -1,6 +1,6 @@
 @for (breadcrumb of navigationList; track breadcrumb; let last = $last) {
   @if (last && breadcrumb.breadcrumbs !== false) {
-    <div class="page-header">
+    <div class="page-header position-relative">
       <div class="page-block">
         <div class="row align-items-center">
           <div class="col-md-12">
@@ -29,10 +29,19 @@
                   </li>
                 }
               }
+              
             </ul>
           </div>
         </div>
       </div>
+
+
+      <div class="logo-marca-dagua">
+        <img [src]="'assets/logo/' + nomeEmpresa + '.png'" alt="Logo" />
+      </div>
+      
+
+ 
     </div>
   }
 }

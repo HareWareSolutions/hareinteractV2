@@ -20,17 +20,19 @@ export default class DashboardComponent implements OnInit {
   filtroBusca: string = '';
   modoEdicao: boolean = false;
 
-  campo1: boolean = false;
-  campo2: boolean = false;
-  campo3: boolean = false;
-  campo4: boolean = false;
-  campo5: boolean = false;
+  campo1 = false;
+  campo2 = false;
+  campo3 = false;
+  campo4 = false;
+  campo5 = false;
 
   nomesObservacoes: { [key: string]: string } = {};
 
   // Paginação
   paginaAtual: number = 1;
   itensPorPagina: number = 10;
+  totalPaginas: number = 0;
+  paginas: number[] = [];
 
   leadModelo = {
     id: null,
@@ -54,41 +56,38 @@ export default class DashboardComponent implements OnInit {
     this.carregarLeads();
   }
 
-  get leadsFiltrados() {
-    if (!this.filtroBusca) return this.leads;
-    const termo = this.filtroBusca.toLowerCase();
-    return this.leads.filter(lead =>
-      lead.nome?.toLowerCase().includes(termo) || String(lead.id).includes(termo)
-    );
+  get leadsFiltrados(): any[] {
+    let filtrados = this.leads;
+
+    if (this.filtroBusca) {
+      const termo = this.filtroBusca.toLowerCase();
+      filtrados = this.leads.filter(lead =>
+        lead.nome?.toLowerCase().includes(termo) ||
+        String(lead.id).includes(termo)
+      );
+    }
+
+    this.totalPaginas = Math.ceil(filtrados.length / this.itensPorPagina);
+    this.paginas = Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
+
+    const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
+    return filtrados.slice(inicio, inicio + this.itensPorPagina);
   }
 
-  get leadsPaginados() {
-    const start = (this.paginaAtual - 1) * this.itensPorPagina;
-    const end = start + this.itensPorPagina;
-    return this.leadsFiltrados.slice(start, end);
-  }
-
-  get inicioPaginado(): number {
-    return (this.paginaAtual - 1) * this.itensPorPagina + 1;
-  }
-
-  get fimPaginado(): number {
-    return Math.min(this.paginaAtual * this.itensPorPagina, this.leadsFiltrados.length);
+  mudarPagina(pagina: number): void {
+    if (pagina >= 1 && pagina <= this.totalPaginas) {
+      this.paginaAtual = pagina;
+    }
   }
 
   formatarTelefone(): void {
     if (!this.leadSelecionado?.numero_celular) return;
     let numero = this.leadSelecionado.numero_celular.replace(/\D/g, '');
-    if (numero.startsWith('55')) {
-      numero = numero.substring(2);
-    }
+    if (numero.startsWith('55')) numero = numero.substring(2);
     numero = numero.substring(0, 11);
-    let formatado = '';
-    if (numero.length <= 10) {
-      formatado = numero.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-    } else {
-      formatado = numero.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
-    }
+    let formatado = numero.length <= 10
+      ? numero.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3')
+      : numero.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
     this.leadSelecionado.numero_celular = `+55 ${formatado}`.trim();
   }
 
@@ -96,46 +95,44 @@ export default class DashboardComponent implements OnInit {
     if (!numero) return '';
     let limpo = numero.replace(/\D/g, '');
     if (limpo.startsWith('55')) limpo = limpo.slice(2);
-    if (limpo.length === 11) {
-      return `+55 (${limpo.slice(0, 2)}) ${limpo.slice(2, 7)}-${limpo.slice(7)}`;
-    }
-    if (limpo.length === 10) {
-      return `+55 (${limpo.slice(0, 2)}) ${limpo.slice(2, 6)}-${limpo.slice(6)}`;
-    }
-    return `+55 ${numero}`;
+    return limpo.length === 11
+      ? `+55 (${limpo.slice(0, 2)}) ${limpo.slice(2, 7)}-${limpo.slice(7)}`
+      : limpo.length === 10
+      ? `+55 (${limpo.slice(0, 2)}) ${limpo.slice(2, 6)}-${limpo.slice(6)}`
+      : `+55 ${numero}`;
   }
 
   abrirModal(acao: number, lead: any = null): void {
-    if (acao === 2 && lead) {
+    this.modoEdicao = acao === 2 && !!lead;
+    if (this.modoEdicao) {
       this.leadService.buscarLeadPorId(lead.id, this.usuario.empresa).subscribe({
         next: (res) => {
-          this.modoEdicao = true;
+          const r = res.retorno;
           this.leadSelecionado = {
             ...this.leadModelo,
-            id: res.retorno.id || null,
+            id: r.id || null,
             empresa: this.usuario.empresa,
-            nome: res.retorno.nome || '',
-            numero_celular: res.retorno.telefone || '55 ',
-            email: res.retorno.email || '',
-            pausado: res.retorno.pausa || false,
-            observacao1: res.retorno.observacao_1 || '',
-            ativoObservacao1: !!res.retorno.observacao_1, 
-            observacao2: res.retorno.observacao_2 || '',
-            ativoObservacao2: !!res.retorno.observacao_2, 
-            observacao3: res.retorno.observacao_3 || '',
-            ativoObservacao3: !!res.retorno.observacao_3, 
-            observacao4: res.retorno.observacao_4 || '',
-            ativoObservacao4: !!res.retorno.observacao_4, 
-            observacao5: res.retorno.observacao_5 || '',
-            ativoObservacao5: !!res.retorno.observacao_5, 
-            lembrete: res.retorno.lembrete || 'N/A',
+            nome: r.nome || '',
+            numero_celular: r.telefone || '55 ',
+            email: r.email || '',
+            pausado: r.pausa || false,
+            observacao1: r.observacao_1 || '',
+            ativoObservacao1: !!r.observacao_1,
+            observacao2: r.observacao_2 || '',
+            ativoObservacao2: !!r.observacao_2,
+            observacao3: r.observacao_3 || '',
+            ativoObservacao3: !!r.observacao_3,
+            observacao4: r.observacao_4 || '',
+            ativoObservacao4: !!r.observacao_4,
+            observacao5: r.observacao_5 || '',
+            ativoObservacao5: !!r.observacao_5,
+            lembrete: r.lembrete || 'N/A',
           };
           this.mostrarModal = true;
         },
         error: (err) => console.error("❌ Erro ao buscar lead:", err)
       });
     } else {
-      this.modoEdicao = false;
       this.leadSelecionado = { ...this.leadModelo, empresa: this.usuario.empresa };
       this.mostrarModal = true;
     }
@@ -155,7 +152,7 @@ export default class DashboardComponent implements OnInit {
         observacao2: this.buscarNome('observacao2'),
         observacao3: this.buscarNome('observacao3'),
         observacao4: this.buscarNome('observacao4'),
-        observacao5: this.buscarNome('observacao5')
+        observacao5: this.buscarNome('observacao5'),
       };
       this.campo1 = this.verificarAtivo('observacao1');
       this.campo2 = this.verificarAtivo('observacao2');
@@ -184,6 +181,7 @@ export default class DashboardComponent implements OnInit {
     this.leadService.visualizarContatos(this.usuario.empresa).subscribe({
       next: (res) => {
         this.leads = res.retorno || [];
+        this.paginaAtual = 1;
       },
       error: (err) => console.error('❌ Erro ao carregar leads:', err)
     });
@@ -206,28 +204,24 @@ export default class DashboardComponent implements OnInit {
       observacao5: this.leadSelecionado.observacao5 || null,
       lembrete: this.leadSelecionado.lembrete || null
     };
-    if (this.leadSelecionado.id) {
-      this.leadService.editarLead(leadParaEnvio).subscribe({
-        next: () => {
-          this.fecharModal();
-          this.carregarLeads();
-        },
-        error: (err) => console.error("❌ Erro ao atualizar lead:", err)
-      });
-    } else {
-      this.leadService.cadastrarLead(leadParaEnvio).subscribe({
-        next: () => {
-          this.fecharModal();
-          this.carregarLeads();
-        },
-        error: (err) => console.error("❌ Erro ao cadastrar lead:", err)
-      });
-    }
+
+    const observable = this.leadSelecionado.id
+      ? this.leadService.editarLead(leadParaEnvio)
+      : this.leadService.cadastrarLead(leadParaEnvio);
+
+    observable.subscribe({
+      next: () => {
+        this.fecharModal();
+        this.carregarLeads();
+      },
+      error: (err) => console.error("❌ Erro ao salvar lead:", err)
+    });
   }
 
   excluirLead(id: number): void {
     if (!this.usuario?.empresa) return;
     if (!confirm('Tem certeza que deseja excluir este lead?')) return;
+
     this.leadService.removerLead(id.toString(), this.usuario.empresa).subscribe({
       next: () => this.carregarLeads(),
       error: (err) => console.error('❌ Erro ao excluir lead:', err)
@@ -249,21 +243,15 @@ export default class DashboardComponent implements OnInit {
       observacao5: lead.observacao5 || null,
       lembrete: lead.lembrete || null
     };
+
     this.leadService.editarLead(leadParaEnvio).subscribe({
-      next: () => {
-        lead.pausa = !lead.pausa;
-      },
+      next: () => (lead.pausa = !lead.pausa),
       error: (err) => console.error("❌ Erro ao atualizar pausa:", err)
     });
   }
 
   isHoje(data: string): boolean {
-    const hoje = new Date();
-    const hojeFormatado = hoje.toLocaleDateString('en-CA');
-    return data === hojeFormatado;
-  }
-
-  mudarPagina(novaPagina: number): void {
-    this.paginaAtual = novaPagina;
+    const hoje = new Date().toISOString().split('T')[0];
+    return data === hoje;
   }
 }

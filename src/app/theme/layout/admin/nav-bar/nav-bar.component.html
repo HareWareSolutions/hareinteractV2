@@ -3,9 +3,9 @@
     <a class="mobile-menu" id="mobile-collapse1" href="javascript:" (click)="this.NavCollapsedMob.emit()"><span></span></a>
     <a [routerLink]="['/dashboard']" class="b-brand">
       <div class="b-bg">
-        <img src="assets/images/ICONE HAREINTERACT BRANCO.png" style="width: 30px; height: auto;" alt="Datta Able Logo">
+        <img [src]="logoPath" style="width: 30px; height: auto;" alt="Logo da empresa" />
       </div>
-      <span class="b-title">HAREINTERACT</span>
+      <span class="b-title text-uppercase">{{ nomeEmpresa }}</span>
     </a>
   </div>
   <a class="mobile-menu" [ngClass]="{ on: this.menuClass }" id="mobile-header" href="javascript:" (click)="toggleMobOption()">

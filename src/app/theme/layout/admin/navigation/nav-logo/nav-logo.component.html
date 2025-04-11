@@ -1,9 +1,9 @@
 <div>
   <a [routerLink]="['/dashboard']" class="b-brand">
     <div class="b-bg">
-      <img src="assets/images/ICONE HAREINTERACT BRANCO.png" style="width: 30px; height: auto;" alt="Datta Able Logo">
+      <img [src]="logoPath" alt="Logo da empresa" style="width: 30px; height: auto;" />
     </div>
-    <span class="b-title">HAREINTERACT</span>
+      <span class="b-title text-uppercase">{{ nomeEmpresa }}</span>
   </a>
   <a href="javascript:" class="mobile-menu" [ngClass]="{ on: navCollapsed }" id="mobile-collapse" (click)="navCollapse()"><span></span></a>
 </div>

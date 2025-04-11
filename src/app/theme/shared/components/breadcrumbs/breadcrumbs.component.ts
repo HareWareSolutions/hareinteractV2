@@ -19,6 +19,7 @@ export class BreadcrumbsComponent {
   navigation: any;
   breadcrumbList: Array<any> = [];
   navigationList: any;
+  nomeEmpresa: string = 'default-logo'; // nome da imagem do logo
 
   constructor(
     private _router: Router,
@@ -27,6 +28,17 @@ export class BreadcrumbsComponent {
   ) {
     this.navigation = this.nav.get();
     this.setBreadcrumb();
+
+    // Pegar nome da empresa do localStorage
+    const user = localStorage.getItem('user');
+    if (user) {
+      try {
+        const parsed = JSON.parse(user);
+        this.nomeEmpresa = parsed.empresa?.toLowerCase() || 'default-logo';
+      } catch (e) {
+        console.warn('Erro ao extrair empresa do localStorage', e);
+      }
+    }
   }
 
   setBreadcrumb() {

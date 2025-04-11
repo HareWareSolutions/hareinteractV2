@@ -1,9 +1,17 @@
-<div class="col-xl-12 col-md-12 dashboard-wrapper position-relative">
-  <app-card cardTitle="Contatos"  [options]="false" [buttonh]="true" [search]="true" buttonTitle="Adicionar Contato" [buttonAction]="abrirModal.bind(this)"  
-  [searchPlaceholder]="'Buscar por nome ou ID...'"
-  (searchChange)="filtroBusca = $event" cardClass="Recent-Users" blockClass="p-0">
+<div class="col-xl-12 col-md-12">
+  <app-card
+    cardTitle="Contatos"
+    [options]="false"
+    [buttonh]="true"
+    [search]="true"
+    buttonTitle="Adicionar Contato"
+    [buttonAction]="abrirModal.bind(this)"
+    [searchPlaceholder]="'Buscar por nome ou ID...'"
+    (searchChange)="filtroBusca = $event"
+    cardClass="Recent-Users"
+    blockClass="p-0"
+  >
     <div class="table-responsive">
-
       <table class="table table-hover mb-0">
         <thead>
           <tr>
@@ -17,12 +25,21 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let lead of leadsFiltrados "  [ngClass]="{'linha-hoje': isHoje(lead.ultimo_contato)}">
+          <tr
+            *ngFor="let lead of leadsFiltrados"
+            [ngClass]="{ 'linha-hoje': isHoje(lead.ultimo_contato) }"
+          >
             <td>{{ lead.id }}</td>
             <td>{{ lead.nome }}</td>
             <td>{{ formatarCelularParaExibicao(lead.numero_celular) }}</td>
             <td>{{ lead.email || 'Não informado' }}</td>
-            <td>{{ lead.ultimo_contato ? (lead.ultimo_contato | date:'dd/MM/yyyy') : 'Sem registro' }}</td>
+            <td>
+              {{
+                lead.ultimo_contato
+                  ? (lead.ultimo_contato | date : 'dd/MM/yyyy')
+                  : 'Sem registro'
+              }}
+            </td>
             <td>
               <div class="form-check form-switch d-flex align-items-center gap-1">
                 <input
@@ -31,22 +48,67 @@
                   [checked]="lead.pausa"
                   (change)="onTogglePausa(lead)"
                 />
-                <span [class.text-danger]="lead.pausa" [class.text-success]="!lead.pausa">
+                <span
+                  [class.text-danger]="lead.pausa"
+                  [class.text-success]="!lead.pausa"
+                >
                   {{ lead.pausa ? 'Pausado' : 'Ativo' }}
                 </span>
               </div>
             </td>
-            <!-- Ações -->
             <td>
-              <a href="javascript:" class="label theme-bg text-white f-12 rounded-pill"  (click)="abrirModal(2, lead)" > Ajustar </a>
-              <a href="javascript:" class="label theme-bg2 text-white f-12 rounded-pill" (click)="excluirLead(lead.id)" >Excluir</a>
+              <a
+                href="javascript:"
+                class="label theme-bg text-white f-12 rounded-pill"
+                (click)="abrirModal(2, lead)"
+              >
+                Ajustar
+              </a>
+              <a
+                href="javascript:"
+                class="label theme-bg2 text-white f-12 rounded-pill"
+                (click)="excluirLead(lead.id)"
+              >
+                Excluir
+              </a>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <!-- Paginação -->
+    <nav aria-label="Page navigation" class="mt-3">
+      <ul class="pagination justify-content-center">
+        <li
+          class="page-item"
+          [class.disabled]="paginaAtual === 1"
+          (click)="mudarPagina(paginaAtual - 1)"
+        >
+          <span class="page-link">Anterior</span>
+        </li>
+
+        <li
+          class="page-item"
+          *ngFor="let pagina of paginas"
+          [class.active]="pagina === paginaAtual"
+          (click)="mudarPagina(pagina)"
+        >
+          <span class="page-link">{{ pagina }}</span>
+        </li>
+
+        <li
+          class="page-item"
+          [class.disabled]="paginaAtual === totalPaginas"
+          (click)="mudarPagina(paginaAtual + 1)"
+        >
+          <span class="page-link">Próximo</span>
+        </li>
+      </ul>
+    </nav>
   </app-card>
 </div>
+
 
 
 <!-- Modal de Adicionar/Editar Lead -->

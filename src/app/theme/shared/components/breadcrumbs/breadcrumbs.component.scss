@@ -1,0 +1,15 @@
+.logo-marca-dagua {
+    position: fixed;
+    top: 20px; /* ajuste vertical */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0.20;
+    z-index: 0;
+    pointer-events: none;
+  }
+  
+  .logo-marca-dagua img {
+    max-width: 400px;
+    display: block; /* Garante que padding/margin não bugue o alinhamento */
+  }
+  
