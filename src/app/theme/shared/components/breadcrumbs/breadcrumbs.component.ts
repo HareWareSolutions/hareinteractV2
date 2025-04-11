@@ -108,6 +108,6 @@ export class BreadcrumbsComponent {
       }
     });
     this.navigationList = result;
-    this.titleService.setTitle('ATLAS DASHBOARD');
+    this.titleService.setTitle('HAREINTERACT');
   }
 }
