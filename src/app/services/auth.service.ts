@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, map, throwError, catchError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,22 +13,23 @@ export class AuthService {
   login(email: string, senha: string): Observable<any> {
     const url = `${this.apiUrl}?usuario=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`;
 
-    return this.http.post(url, {}).pipe(
-      tap(response => {
-        if (response && response.id) { // Valida se a resposta contém um ID (usuário válido)
-          // console.log("✅ Login bem-sucedido:", response);
-          localStorage.setItem('user', JSON.stringify(response)); // Salva os dados do usuário
+    return this.http.post<any>(url, {}).pipe(
+      map(response => {
+        if (response && response.id) {
+          localStorage.setItem('user', JSON.stringify(response));
+          return response; // tudo certo
         } else {
-          console.warn("⚠ Login falhou: resposta inválida", response);
+          throw new Error('Credenciais inválidas');
         }
+      }),
+      catchError(error => {
+        return throwError(() => error);
       })
     );
   }
 
   isAuthenticated(): boolean {
-    const user = localStorage.getItem('user');
-    // console.log("🔍 Verificando autenticação... Usuário:", user);
-    return user !== null; // Retorna `true` se houver um usuário salvo
+    return localStorage.getItem('user') !== null;
   }
 
   getUser(): any {
@@ -37,7 +38,6 @@ export class AuthService {
   }
 
   logout(): void {
-    // console.log("🚪 Saindo...");
     localStorage.removeItem('user');
   }
 }
