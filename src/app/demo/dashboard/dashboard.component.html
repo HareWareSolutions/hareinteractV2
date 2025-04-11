@@ -1,4 +1,4 @@
-<div class="col-xl-12 col-md-12">
+<div class="col-xl-12 col-md-12 dashboard-wrapper position-relative">
   <app-card cardTitle="Contatos"  [options]="false" [buttonh]="true" [search]="true" buttonTitle="Adicionar Contato" [buttonAction]="abrirModal.bind(this)"  
   [searchPlaceholder]="'Buscar por nome ou ID...'"
   (searchChange)="filtroBusca = $event" cardClass="Recent-Users" blockClass="p-0">
@@ -17,10 +17,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let lead of leadsFiltrados">
+          <tr *ngFor="let lead of leadsFiltrados "  [ngClass]="{'linha-hoje': isHoje(lead.ultimo_contato)}">
             <td>{{ lead.id }}</td>
             <td>{{ lead.nome }}</td>
-            <td>{{ lead.numero_celular }}</td>
+            <td>{{ formatarCelularParaExibicao(lead.numero_celular) }}</td>
             <td>{{ lead.email || 'Não informado' }}</td>
             <td>{{ lead.ultimo_contato ? (lead.ultimo_contato | date:'dd/MM/yyyy') : 'Sem registro' }}</td>
             <td>
@@ -116,47 +116,47 @@
               </select>
             </div>
 
+            <div *ngIf="verificarAtivo('observacao1')">
                   <!-- Observações Fixas (Independentes) -->
                 <div class="mb-3 d-flex align-items-center justify-content-between" >
                   <label class="form-label mb-0"> {{ nomesObservacoes['observacao1'] }} </label>
-                  <div class="form-check form-switch custom-switch">
-                    <input type="checkbox" class="form-check-input" [(ngModel)]="leadSelecionado.ativoObservacao1" name="ativoObservacao1">
-                  </div>
                 </div>
                 <textarea class="form-control" [(ngModel)]="leadSelecionado.observacao1" name="observacao1"></textarea>
-              <br>
+                <br>
+            </div>  
+
+            <div *ngIf="verificarAtivo('observacao2')">
                 <div class="mb-3 d-flex align-items-center justify-content-between">
                   <label class="form-label mb-0"> {{ nomesObservacoes['observacao2'] }} </label>
-                  <div class="form-check form-switch custom-switch">
-                    <input type="checkbox" class="form-check-input" [(ngModel)]="leadSelecionado.ativoObservacao2" name="ativoObservacao2">
-                  </div>
                 </div>
                 <textarea class="form-control" [(ngModel)]="leadSelecionado.observacao2" name="observacao2"></textarea>
               <br>
-                <div class="mb-3 d-flex align-items-center justify-content-between">
-                  <label class="form-label mb-0"> {{ nomesObservacoes['observacao3'] }} </label>
-                  <div class="form-check form-switch custom-switch">
-                    <input type="checkbox" class="form-check-input" [(ngModel)]="leadSelecionado.ativoObservacao3" name="ativoObservacao3">
-                  </div>
-                </div>
-                <textarea class="form-control" [(ngModel)]="leadSelecionado.observacao3" name="observacao3"></textarea>
+            </div>
+
+            <div *ngIf="verificarAtivo('observacao3')">
+              <div class="mb-3 d-flex align-items-center justify-content-between">
+                <label class="form-label mb-0"> {{ nomesObservacoes['observacao3'] }} </label>
+              </div>
+              <textarea class="form-control" [(ngModel)]="leadSelecionado.observacao3" name="observacao3"></textarea>
               <br>
-                <div class="mb-3 d-flex align-items-center justify-content-between">
-                  <label class="form-label mb-0"> {{ nomesObservacoes['observacao4'] }} </label>
-                  <div class="form-check form-switch custom-switch">
-                    <input type="checkbox" class="form-check-input" [(ngModel)]="leadSelecionado.ativoObservacao4" name="ativoObservacao4">
-                  </div>
-                </div>
-                <textarea class="form-control" [(ngModel)]="leadSelecionado.observacao4" name="observacao4"></textarea>
-                <br>
-                <div class="mb-3 d-flex align-items-center justify-content-between">
-                  <label class="form-label mb-0"> {{ nomesObservacoes['observacao5'] }} </label>
-                  <div class="form-check form-switch custom-switch">
-                    <input type="checkbox" class="form-check-input" [(ngModel)]="leadSelecionado.ativoObservacao5" name="ativoObservacao5">
-                  </div>
-                </div>
-                <textarea class="form-control" [(ngModel)]="leadSelecionado.observacao5" name="observacao5"></textarea>
-                <br>
+            </div>
+
+
+            <div *ngIf="verificarAtivo('observacao4')">
+              <div class="mb-3 d-flex align-items-center justify-content-between">
+                <label class="form-label mb-0"> {{ nomesObservacoes['observacao4'] }} </label>
+              </div>
+              <textarea class="form-control" [(ngModel)]="leadSelecionado.observacao4" name="observacao4"></textarea>
+              <br>
+            </div>
+
+            <div *ngIf="verificarAtivo('observacao5')">
+              <div class="mb-3 d-flex align-items-center justify-content-between">
+                <label class="form-label mb-0"> {{ nomesObservacoes['observacao5'] }} </label>
+              </div>
+              <textarea class="form-control" [(ngModel)]="leadSelecionado.observacao5" name="observacao5"></textarea>
+              <br>
+            </div>
 
           </div>
           
