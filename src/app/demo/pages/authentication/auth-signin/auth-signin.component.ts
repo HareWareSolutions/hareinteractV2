@@ -17,8 +17,10 @@ export default class AuthSigninComponent {
 
   constructor(private authService: AuthService, private fb: FormBuilder, private router: Router) {
     this.loginForm = this.fb.group({
-      email: ['ramirez@teste.com.br', [Validators.required, Validators.email]],
-      senha: ['teste@123', Validators.required]
+      // email: ['ramirez@teste.com.br', [Validators.required, Validators.email]],
+      // senha: ['teste@123', Validators.required]
+      email: ['', [Validators.required, Validators.email]],
+      senha: ['', Validators.required]
     });
   }
 
