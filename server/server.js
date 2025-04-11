@@ -48,7 +48,7 @@ app.use('/uploads', express.static('uploads'));
 // Rota POST para imprimir o pedido sem salvar no banco
 app.post('/api/imprimir-pedido', (req, res) => {
 
-  console.log('Dados de impressao',req.body)
+  //console.log('Dados de impressao',req.body)
 
   const { id_mesa,numero, total, item, observacao, nome_pe, endereco_pe, ordem_type_pe } = req.body;
 
@@ -80,7 +80,7 @@ ${itensArray.map(i => `* ${i.quantidade}X -- ${i.nome} `).join('\n')}
 
   // Criar o arquivo de ticket
   fs.writeFileSync(filePath, content, 'utf8');
-  console.log(`Arquivo de ticket criado: ${filePath}`);
+  //console.log(`Arquivo de ticket criado: ${filePath}`);
 
   // Enviar para impressão via Notepad
   exec(`notepad /p "${filePath}"`, (err, stdout, stderr) => {
@@ -89,14 +89,14 @@ ${itensArray.map(i => `* ${i.quantidade}X -- ${i.nome} `).join('\n')}
       return res.status(500).json({ error: 'Erro ao imprimir o pedido' });
     }
 
-    console.log('Pedido enviado para impressão!');
+    //console.log('Pedido enviado para impressão!');
 
     // Deletar o arquivo de ticket após a impressão
     fs.unlink(filePath, (err) => {
       if (err) {
         console.error('Erro ao excluir o arquivo de ticket:', err);
       } else {
-        console.log('Arquivo de ticket excluído');
+        //console.log('Arquivo de ticket excluído');
       }
     });
 
@@ -162,7 +162,7 @@ app.post('/api/imprimir-historico-mesa', (req, res) => {
 
   // Criar o arquivo de ticket
   fs.writeFileSync(filePath, content, 'utf8');
-  console.log(`Arquivo de ticket criado: ${filePath}`);
+  //console.log(`Arquivo de ticket criado: ${filePath}`);
 
   // Enviar para impressão via Notepad
   exec(`notepad /p "${filePath}"`, (err, stdout, stderr) => {
@@ -171,14 +171,14 @@ app.post('/api/imprimir-historico-mesa', (req, res) => {
       return res.status(500).json({ error: 'Erro ao imprimir o histórico de pedidos' });
     }
 
-    console.log('Histórico de pedidos enviado para impressão!');
+    //console.log('Histórico de pedidos enviado para impressão!');
 
     // Deletar o arquivo de ticket após a impressão
     fs.unlink(filePath, (err) => {
       if (err) {
         console.error('Erro ao excluir o arquivo de ticket:', err);
       } else {
-        console.log('Arquivo de ticket excluído');
+        //console.log('Arquivo de ticket excluído');
       }
     });
 
@@ -195,7 +195,7 @@ app.get('/api/produtos', (req, res) => {
       console.error('Erro ao consultar os produtos:', err);
       res.status(500).json({ error: 'Erro ao obter produtos', details: err });
     } else {
-      console.log('Produtos encontrados:', results);
+      //console.log('Produtos encontrados:', results);
       res.json(results);
     }
   });
@@ -214,7 +214,7 @@ app.post('/api/produtos', upload.single('imagem'), (req, res) => {
       console.error('Erro ao adicionar produto:', err);
       res.status(500).json({ error: 'Erro ao adicionar produto' });
     } else {
-      console.log('Produto adicionado com sucesso:', result);
+      //console.log('Produto adicionado com sucesso:', result);
       res.status(201).json({ message: 'Produto adicionado com sucesso', id: result.insertId });
     }
   });
@@ -230,10 +230,10 @@ app.delete('/api/produtos/:id', (req, res) => {
       console.error('Erro ao deletar produto:', err);
       res.status(500).json({ error: 'Erro ao deletar produto' });
     } else if (results.affectedRows === 0) {
-      console.log('Produto não encontrado:', id);
+      //console.log('Produto não encontrado:', id);
       res.status(404).json({ message: 'Produto não encontrado' });
     } else {
-      console.log('Produto deletado com sucesso:', id);
+      //console.log('Produto deletado com sucesso:', id);
       res.status(200).json({ message: 'Produto deletado com sucesso' });
     }
   });
@@ -256,10 +256,10 @@ app.put('/api/produtos/:id', upload.single('imagem'), (req, res) => {
       console.error('Erro ao atualizar produto:', err);
       res.status(500).json({ error: 'Erro ao atualizar produto' });
     } else if (result.affectedRows === 0) {
-      console.log('Produto não encontrado para atualização:', id);
+      //console.log('Produto não encontrado para atualização:', id);
       res.status(404).json({ error: 'Produto não encontrado' });
     } else {
-      console.log('Produto atualizado com sucesso:', id);
+      //console.log('Produto atualizado com sucesso:', id);
       res.json({ message: 'Produto atualizado com sucesso' });
     }
   });
@@ -272,7 +272,7 @@ app.get('/api/funcionarios', (req, res) => {
       console.error('Erro ao consultar os funcionários:', err);
       res.status(500).json({ error: 'Erro ao obter funcionários', details: err });
     } else {
-      console.log('Funcionários encontrados:', results);
+      //console.log('Funcionários encontrados:', results);
       res.json(results);
     }
   });
@@ -288,7 +288,7 @@ app.get('/api/mesas', (req, res) => {
       console.error('Erro ao consultar as mesas:', err);
       res.status(500).json({ error: 'Erro ao obter mesas', details: err });
     } else {
-      console.log('Mesas encontradas:', results);
+      //console.log('Mesas encontradas:', results);
       res.json(results);
     }
   });
@@ -320,7 +320,7 @@ app.post('/api/mesas', (req, res) => {
       console.error('Erro ao adicionar mesa:', err);
       res.status(500).json({ error: 'Erro ao adicionar mesa' });
     } else {
-      console.log('Mesa adicionada com sucesso:', result);
+      //console.log('Mesa adicionada com sucesso:', result);
       res.status(201).json({ message: 'Mesa adicionada com sucesso', id: result.insertId });
     }
   });
@@ -392,7 +392,7 @@ app.delete('/api/mesas/:id', (req, res) => {
     } else if (result.affectedRows === 0) {
       res.status(404).json({ error: 'Mesa não encontrada' });
     } else {
-      console.log('Mesa deletada com sucesso:', id);
+      //console.log('Mesa deletada com sucesso:', id);
       res.json({ message: 'Mesa deletada com sucesso' });
     }
   });
@@ -436,14 +436,14 @@ app.post('/api/pedidos', (req, res) => {
   const values = [id_mesa, status, total, data, JSON.stringify(item), observacao,numero];
 
    // Verificar a observação que chegou
-   console.log('Observação recebida:', observacao);
+   //console.log('Observação recebida:', observacao);
 
   db.query(query, values, (err, result) => {
     if (err) {
       console.error('Erro ao adicionar pedido:', err);
       res.status(500).json({ error: 'Erro ao adicionar pedido' });
     } else {
-      console.log('Pedido adicionado com sucesso:', result);
+      //console.log('Pedido adicionado com sucesso:', result);
       res.status(201).json({ message: 'Pedido adicionado com sucesso', id: result.insertId });
     }
   });
@@ -456,7 +456,7 @@ app.get('/api/pedidos', (req, res) => {
       console.error('Erro ao consultar os pedidos:', err);
       res.status(500).json({ error: 'Erro ao obter pedidos', details: err });
     } else {
-      console.log('Pedidos encontrados:', results);
+      //console.log('Pedidos encontrados:', results);
       res.json(results);
     }
   });
@@ -526,7 +526,7 @@ app.put('/api/pedidos/:id', (req, res) => {
     } else if (result.affectedRows === 0) {
       res.status(404).json({ error: 'Pedido não encontrado' });
     } else {
-      console.log('Pedido atualizado com sucesso:', id);
+      //console.log('Pedido atualizado com sucesso:', id);
       res.json({ message: 'Pedido atualizado com sucesso' });
     }
   });
@@ -543,7 +543,7 @@ app.delete('/api/pedidos/:id', (req, res) => {
     } else if (result.affectedRows === 0) {
       res.status(404).json({ error: 'Pedido não encontrado' });
     } else {
-      console.log('Pedido deletado com sucesso:', id);
+      //console.log('Pedido deletado com sucesso:', id);
       res.json({ message: 'Pedido deletado com sucesso' });
     }
   });
@@ -555,7 +555,7 @@ app.post('/api/vendas', (req, res) => {
   const { id_mesa, numero_mesa, total, data_venda, hora_venda, nota, status_venda, tipo_pagamento, movimento, card_type } = req.body;
 
   // Verificar os dados recebidos (incluir a hora_venda e card_type agora)
-  console.log('Dados recebidos para a venda:', req.body);
+  //console.log('Dados recebidos para a venda:', req.body);
 
   // Insira a venda na tabela 'vendas', agora incluindo o campo card_type
   const query = `
@@ -570,7 +570,7 @@ app.post('/api/vendas', (req, res) => {
       console.error('Erro ao adicionar venda:', err);
       res.status(500).json({ error: 'Erro ao adicionar venda' });
     } else {
-      console.log('Venda adicionada com sucesso:', result);
+      //console.log('Venda adicionada com sucesso:', result);
       res.status(201).json({ message: 'Venda adicionada com sucesso', id_venda: result.insertId });
     }
   });
@@ -616,7 +616,7 @@ app.put('/api/vendas/:id', (req, res) => {
       return res.status(404).json({ error: 'Venda não encontrada' });
     }
 
-    console.log('Venda atualizada com sucesso:', id);
+    //console.log('Venda atualizada com sucesso:', id);
     res.json({ message: 'Venda atualizada com sucesso' });
   });
 });
@@ -625,5 +625,5 @@ app.put('/api/vendas/:id', (req, res) => {
 const ip = '0.0.0.0'; // Permite conexões externas
 
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Servidor rodando em http://192.168.99.102:${port}`);
+  //console.log(`Servidor rodando em http://192.168.99.102:${port}`);
 });

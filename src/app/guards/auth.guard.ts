@@ -11,7 +11,7 @@ export class AuthGuard implements CanActivate {
 
   canActivate(): boolean {
     const isAuthenticated = this.authService.isAuthenticated();
-    console.log('🔍 AuthGuard | isAuthenticated:', isAuthenticated);
+    // console.log('🔍 AuthGuard | isAuthenticated:', isAuthenticated);
 
     if (!isAuthenticated) {
       console.warn("⛔ Acesso negado: Redirecionando para login...");

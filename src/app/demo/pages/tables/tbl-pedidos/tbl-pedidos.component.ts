@@ -32,7 +32,7 @@ export class TblPedidosComponent implements OnInit {
   carregarPedidos() {
     this.pedidoService.getPedidos().subscribe(
       (pedidos) => {
-        console.log('Pedidos recebidos:', pedidos); // Verifique a estrutura completa aqui.
+        // console.log('Pedidos recebidos:', pedidos); // Verifique a estrutura completa aqui.
   
         if (pedidos && pedidos.length > 0) {
           // Mapeando os pedidos para incluir a lista de produtos de forma organizada
@@ -41,7 +41,7 @@ export class TblPedidosComponent implements OnInit {
               const produtosString = pedido.item;  // String com os produtos
               const numeroMesa = (pedido as any).num_mesa;  // Acessa num_mesa com casting
   
-              console.log('Número da Mesa:', numeroMesa); // Verifica o número da mesa
+              // console.log('Número da Mesa:', numeroMesa); // Verifica o número da mesa
   
               if (produtosString && typeof produtosString === 'string') {
                 // Converte a string de produtos em um array de objetos de produtos
@@ -85,9 +85,9 @@ export class TblPedidosComponent implements OnInit {
   
           // Atualiza a paginação após carregar os pedidos
           this.atualizarPaginacao();
-          console.log('Pedidos com produtos:', this.pedidosComProdutos); // Verifique se a estrutura final está correta.
+          // console.log('Pedidos com produtos:', this.pedidosComProdutos); // Verifique se a estrutura final está correta.
         } else {
-          console.log('Nenhum pedido encontrado!');
+          // console.log('Nenhum pedido encontrado!');
         }
       },
       (error) => {
@@ -107,7 +107,7 @@ export class TblPedidosComponent implements OnInit {
       (this.currentPage - 1) * this.itemsPerPage,
       this.currentPage * this.itemsPerPage
     );
-    console.log('Pedidos paginados:', this.pedidosPaginados);
+    // console.log('Pedidos paginados:', this.pedidosPaginados);
   }
 
   changePage(page: number): void {

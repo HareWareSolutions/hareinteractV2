@@ -542,7 +542,7 @@ export class TblMesasComponent implements OnInit {
         console.error('Erro ao finalizar mesa', error);
       });
     } else {
-      console.log('Finalização da mesa cancelada');
+      // console.log('Finalização da mesa cancelada');
     }
 
 

@@ -19,7 +19,7 @@ const content = `
 
 // Criar o arquivo ticket.txt
 fs.writeFileSync(filePath, content, 'utf8');
-console.log(`Arquivo criado: ${filePath}`);
+// console.log(`Arquivo criado: ${filePath}`);
 
 // Enviar para impressão via Bloco de Notas
 exec(`notepad /p "${filePath}"`, (err, stdout, stderr) => {
@@ -27,5 +27,5 @@ exec(`notepad /p "${filePath}"`, (err, stdout, stderr) => {
     console.error('❌ Erro ao imprimir:', err);
     return;
   }
-  console.log('✅ Arquivo enviado para impressão via Notepad!');
+  // console.log('✅ Arquivo enviado para impressão via Notepad!');
 });

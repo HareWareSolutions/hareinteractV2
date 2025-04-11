@@ -23,7 +23,7 @@ export class NavBarComponent implements OnInit {
         const user = JSON.parse(userStr);
         this.nomeEmpresa = user.empresa || 'EMPRESA';
 
-        console.log('NOME DA EMPRESA', this.nomeEmpresa);
+        // console.log('NOME DA EMPRESA', this.nomeEmpresa);
         
         this.logoPath = `assets/logo/${user.empresa.toLowerCase()}.png`;
       } catch (error) {

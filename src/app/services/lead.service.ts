@@ -49,7 +49,7 @@ export class LeadService {
       }
     });
 
-    console.log("Enviando os seguintes parâmetros:", params.toString()); // Debug para ver os dados enviados
+    // console.log("Enviando os seguintes parâmetros:", params.toString()); // Debug para ver os dados enviados
     
     return this.http.post(`${this.apiBaseUrl}/editar-contato-lead`, {}, { params });
   }

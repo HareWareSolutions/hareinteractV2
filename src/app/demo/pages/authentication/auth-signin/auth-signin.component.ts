@@ -23,23 +23,23 @@ export default class AuthSigninComponent {
   }
 
   onSubmit() {
-    console.log("Tentando fazer login...");
+    // console.log("Tentando fazer login...");
   
     if (this.loginForm.invalid) {
-      console.log("Formulário inválido!");
+      // console.log("Formulário inválido!");
       return;
     }
   
     const { email, senha } = this.loginForm.value;
-    console.log("Dados do formulário:", email, senha);
+    // console.log("Dados do formulário:", email, senha);
     
     this.authService.login(email, senha).subscribe({
       next: () => {
-        console.log("Login bem-sucedido!");
+        // console.log("Login bem-sucedido!");
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
-        console.error("Erro ao fazer login:", error);
+        // console.error("Erro ao fazer login:", error);
         this.errorMessage = 'Login inválido. Verifique suas credenciais.';
       }
     });
