@@ -181,6 +181,7 @@ export default class DashboardComponent implements OnInit {
     this.leadService.visualizarContatos(this.usuario.empresa).subscribe({
       next: (res) => {
         this.leads = res.retorno || [];
+        console.log('VIZUALIZAR CONTATOS',this.leads)
         this.paginaAtual = 1;
       },
       error: (err) => console.error('❌ Erro ao carregar leads:', err)
@@ -254,4 +255,45 @@ export default class DashboardComponent implements OnInit {
     const hoje = new Date().toISOString().split('T')[0];
     return data === hoje;
   }
+
+  situacoesMap: { [key: number]: string } = {
+    0: 'Novo Lead',
+    1: 'Lead Visualizado',
+    2: 'Lead Perdido',
+    3: 'Negócio Fechado'
+  };
+  
+  atualizarSituacaoLead(lead: any, novaSituacao: number): void {
+    // Atualiza a situação localmente na tabela
+    lead.situacao = novaSituacao;
+  
+    // Chama o serviço para atualizar no backend
+    const leadAtualizado = {
+      ...lead,
+      situacao: novaSituacao,
+      empresa: this.usuario.empresa // Certifique-se de incluir o campo 'empresa'
+    };
+  
+    this.leadService.editarLead(leadAtualizado).subscribe({
+      next: () => {
+        // Sucesso na atualização no servidor
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
+      },
+      error: (err) => {
+        // Caso haja erro, reverte a mudança na tabela local
+        console.error("❌ Erro ao atualizar situação:", err);
+        lead.situacao = this.situacoesMap[lead.situacao]; // Correção aqui, estava 'situacaoMap'
+        console.log("Detalhes do erro:", err.error?.detail);
+      }
+    });
+  }
+  
+  
+  situacaoKeys(): number[] {
+    return Object.keys(this.situacoesMap).map(Number);
+  }
+
+
 }

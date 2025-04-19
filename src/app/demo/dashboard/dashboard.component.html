@@ -20,15 +20,19 @@
             <th>Número de Celular</th>
             <th>Email</th>
             <th>Ultimo Contato</th>
+            <th>Situação</th>
             <th>Pausa</th>
             <th>Ações</th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            *ngFor="let lead of leadsFiltrados"
-            [ngClass]="{ 'linha-hoje': isHoje(lead.ultimo_contato) }"
-          >
+          <tr *ngFor="let lead of leadsFiltrados"
+          [ngClass]="{
+            'lead-novo': lead.situacao === 0,
+            'lead-visualizado': lead.situacao === 1,
+            'lead-perdido': lead.situacao === 2,
+            'lead-fechado': lead.situacao === 3
+          }">
             <td>{{ lead.id }}</td>
             <td>{{ lead.nome }}</td>
             <td>{{ formatarCelularParaExibicao(lead.numero_celular) }}</td>
@@ -40,6 +44,18 @@
                   : 'Sem registro'
               }}
             </td>
+            <td>
+              <select
+                class="form-control"
+                [ngModel]="lead.situacao"
+                (ngModelChange)="atualizarSituacaoLead(lead, $event)"
+              >
+                <option *ngFor="let key of situacaoKeys()" [value]="key">
+                  {{ situacoesMap[key] }}
+                </option>
+              </select>
+            </td>
+            
             <td>
               <div class="form-check form-switch d-flex align-items-center gap-1">
                 <input
