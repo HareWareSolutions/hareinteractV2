@@ -6,11 +6,6 @@ import { AuthGuard } from './guards/auth.guard'; // Importa o AuthGuard
 
 const routes: Routes = [
   {
-    path: '',
-    redirectTo: 'auth/login', // Agora redirecionamos para a tela de login
-    pathMatch: 'full'
-  },
-  {
     path: 'dashboard',
     component: AdminComponent,  canActivate: [AuthGuard], // 🔒 Protege esta rota com AuthGuard
     children: [
