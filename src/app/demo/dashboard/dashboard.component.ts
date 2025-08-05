@@ -49,13 +49,20 @@ export default class DashboardComponent implements OnInit {
     lembrete: 'N/A'
   };
 
-  constructor(private authService: AuthService, private leadService: LeadService) {}
+  constructor(
+    private authService: AuthService,
+    private leadService: LeadService
+  ) {}
 
   ngOnInit(): void {
     this.carregarDadosUsuario();
     this.carregarLeads();
   }
 
+  /**
+   * Retorna a lista de leads já filtrada e paginada,
+   * atualizando totalPaginas e o array de paginas visíveis.
+   */
   get leadsFiltrados(): any[] {
     let filtrados = this.leads;
 
@@ -68,16 +75,37 @@ export default class DashboardComponent implements OnInit {
     }
 
     this.totalPaginas = Math.ceil(filtrados.length / this.itensPorPagina);
-    this.paginas = Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
+    this.paginas = this.calcularPaginasVisiveis();
 
     const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
     return filtrados.slice(inicio, inicio + this.itensPorPagina);
   }
 
+  /**
+   * Altera a página atual, garantindo que fique dentro dos limites.
+   */
   mudarPagina(pagina: number): void {
     if (pagina >= 1 && pagina <= this.totalPaginas) {
       this.paginaAtual = pagina;
     }
+  }
+
+  /**
+   * Calcula um array de até 5 páginas visíveis,
+   * centralizando na páginaAtual quando possível.
+   */
+  private calcularPaginasVisiveis(): number[] {
+    const maxItems = 5;
+    const total = this.totalPaginas;
+    let start = Math.max(1, this.paginaAtual - Math.floor(maxItems / 2));
+    let end = start + maxItems - 1;
+
+    if (end > total) {
+      end = total;
+      start = Math.max(1, end - maxItems + 1);
+    }
+
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }
 
   formatarTelefone(): void {
@@ -181,7 +209,6 @@ export default class DashboardComponent implements OnInit {
     this.leadService.visualizarContatos(this.usuario.empresa).subscribe({
       next: (res) => {
         this.leads = res.retorno || [];
-        console.log('VIZUALIZAR CONTATOS',this.leads)
         this.paginaAtual = 1;
       },
       error: (err) => console.error('❌ Erro ao carregar leads:', err)
@@ -262,38 +289,28 @@ export default class DashboardComponent implements OnInit {
     2: 'Lead Perdido',
     3: 'Negócio Fechado'
   };
-  
+
   atualizarSituacaoLead(lead: any, novaSituacao: number): void {
-    // Atualiza a situação localmente na tabela
     lead.situacao = novaSituacao;
-  
-    // Chama o serviço para atualizar no backend
     const leadAtualizado = {
       ...lead,
       situacao: novaSituacao,
-      empresa: this.usuario.empresa // Certifique-se de incluir o campo 'empresa'
+      empresa: this.usuario.empresa
     };
-  
     this.leadService.editarLead(leadAtualizado).subscribe({
       next: () => {
-        // Sucesso na atualização no servidor
         setTimeout(() => {
           window.location.reload();
         }, 100);
       },
       error: (err) => {
-        // Caso haja erro, reverte a mudança na tabela local
         console.error("❌ Erro ao atualizar situação:", err);
-        lead.situacao = this.situacoesMap[lead.situacao]; // Correção aqui, estava 'situacaoMap'
-        console.log("Detalhes do erro:", err.error?.detail);
+        lead.situacao = this.situacoesMap[lead.situacao];
       }
     });
   }
-  
-  
+
   situacaoKeys(): number[] {
     return Object.keys(this.situacoesMap).map(Number);
   }
-
-
 }
