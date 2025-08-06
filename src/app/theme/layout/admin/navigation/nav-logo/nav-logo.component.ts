@@ -20,7 +20,7 @@ export class NavLogoComponent implements OnInit {
       try {
         const user = JSON.parse(userStr);
         this.nomeEmpresa = user.empresa || 'EMPRESA';
-        this.logoPath = `assets/logo/loungeeventos.png`; //${user.empresa.toLowerCase()}
+        this.logoPath = `assets/logo/${user.empresa.toLowerCase()}.png`;
       } catch (error) {
         console.error('Erro ao ler usuário do localStorage:', error);
       }
