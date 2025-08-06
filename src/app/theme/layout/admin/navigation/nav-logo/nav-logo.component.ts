@@ -12,7 +12,7 @@ export class NavLogoComponent implements OnInit {
   windowWidth = window.innerWidth;
 
   nomeEmpresa: string = 'EMPRESA';
-  logoPath: string = 'assets/logo/default.png';
+  logoPath: string = 'assets/logo/logo-thumb.png';
 
   ngOnInit(): void {
     const userStr = localStorage.getItem('user');

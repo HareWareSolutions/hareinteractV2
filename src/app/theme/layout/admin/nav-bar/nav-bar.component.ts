@@ -14,7 +14,7 @@ export class NavBarComponent implements OnInit {
   collapseStyle: string = 'none';
 
   nomeEmpresa: string = 'EMPRESA';
-  logoPath: string = 'assets/logo/default.png';
+  logoPath: string = 'assets/logo/logo-thumb.png';
 
   ngOnInit(): void {
     const userStr = localStorage.getItem('user');
@@ -24,7 +24,7 @@ export class NavBarComponent implements OnInit {
         this.nomeEmpresa = user.empresa || 'EMPRESA';
 
         // console.log('NOME DA EMPRESA', this.nomeEmpresa);
-        
+
         this.logoPath = `assets/logo/${user.empresa.toLowerCase()}.png`;
       } catch (error) {
         console.error('Erro ao ler usuário do localStorage:', error);
